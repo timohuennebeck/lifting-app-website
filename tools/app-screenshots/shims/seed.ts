@@ -18,9 +18,8 @@ interface Lift {
   reps?: [number, number];
 }
 
-const ROUTINES: { name: string; lifts: Lift[] }[] = [
+const ROUTINES: { lifts: Lift[] }[] = [
   {
-    name: 'Upper A',
     lifts: [
       { id: 'bench-press', sets: 3, min: 6, max: 8, rir: 2, start: 77.5, gain: 1.25, rest: 180 },
       { id: 'barbell-row', sets: 3, min: 8, max: 10, rir: 2, start: 65, gain: 1.25, rest: 150 },
@@ -31,7 +30,6 @@ const ROUTINES: { name: string; lifts: Lift[] }[] = [
     ],
   },
   {
-    name: 'Lower A',
     lifts: [
       { id: 'squat', sets: 3, min: 5, max: 6, rir: 2, start: 100, gain: 2.5, rest: 180 },
       {
@@ -50,7 +48,6 @@ const ROUTINES: { name: string; lifts: Lift[] }[] = [
     ],
   },
   {
-    name: 'Upper B',
     lifts: [
       {
         id: 'incline-dumbbell-press',
@@ -80,7 +77,6 @@ const ROUTINES: { name: string; lifts: Lift[] }[] = [
     ],
   },
   {
-    name: 'Lower B',
     lifts: [
       { id: 'deadlift', sets: 3, min: 4, max: 6, rir: 2, start: 130, gain: 2.5, rest: 210 },
       {
@@ -110,6 +106,24 @@ const ROUTINES: { name: string; lifts: Lift[] }[] = [
   },
 ];
 
+/** Plan and routine names as the plan generation writes them, per app language. */
+const NAMES: Record<string, { plan: string; routines: string[] }> = {
+  en: { plan: 'Upper / Lower 4×', routines: ['Upper A', 'Lower A', 'Upper B', 'Lower B'] },
+  de: {
+    plan: 'Oberkörper / Unterkörper 4×',
+    routines: ['Oberkörper A', 'Unterkörper A', 'Oberkörper B', 'Unterkörper B'],
+  },
+  'pt-PT': {
+    plan: 'Superior / Inferior 4×',
+    routines: ['Superior A', 'Inferior A', 'Superior B', 'Inferior B'],
+  },
+  'pt-BR': {
+    plan: 'Superior / Inferior 4×',
+    routines: ['Superior A', 'Inferior A', 'Superior B', 'Inferior B'],
+  },
+  ko: { plan: '상체 / 하체 4×', routines: ['상체 A', '하체 A', '상체 B', '하체 B'] },
+};
+
 /** Plate-friendly weights: 2.5 kg steps for barbells and stacks, 1 kg for dumbbells. */
 const round = (kg: number, step: number) => Math.round(kg / step) * step;
 
@@ -129,6 +143,9 @@ const atLocal = (dayStart: number, hour: number, minute = 0) =>
   dayStart + (hour * 60 + minute) * 60000;
 
 export async function seedPreview(db: any) {
+  // Set by the screenshot script; the app itself picks its language from the browser's.
+  const language: string = (globalThis as any).__previewLanguage ?? 'en';
+  const names = NAMES[language] ?? NAMES.en;
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const todayStart = today.getTime();
@@ -163,7 +180,7 @@ export async function seedPreview(db: any) {
     session_minutes: 60,
     split: 'upper_lower',
     active_plan_id: planId,
-    language: 'en',
+    language,
     avatar_path: null,
     bio: null,
     onboarded_at: iso(created),
@@ -188,7 +205,7 @@ export async function seedPreview(db: any) {
   insert('plans', {
     id: planId,
     user_id: USER_ID,
-    name: 'Upper / Lower 4×',
+    name: names.plan,
     position: 0,
     sessions_per_week: 4,
     block_weeks: 6,
@@ -202,7 +219,7 @@ export async function seedPreview(db: any) {
       id,
       user_id: USER_ID,
       plan_id: planId,
-      name: routine.name,
+      name: names.routines[position],
       position,
       created_at: iso(created),
       updated_at: iso(created),
@@ -244,7 +261,8 @@ export async function seedPreview(db: any) {
   }
   for (const { week, routine, day } of sessions) {
     if (day > todayStart) continue;
-    const { name, lifts } = ROUTINES[routine];
+    const { lifts } = ROUTINES[routine];
+    const name = names.routines[routine];
     const start = atLocal(day, 18, Math.floor(random() * 40));
     let clock = start + 4 * 60000;
     const workoutId = uuid();

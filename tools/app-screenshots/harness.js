@@ -75,22 +75,29 @@ function postgrest(table, params) {
 const json = (route, body, status = 200) =>
   route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) });
 
-/** Signs the browser context in (Pro, onboarded) and mocks Supabase and PowerSync. */
-async function prepare(context) {
-  await context.addInitScript((session) => {
-    if (sessionStorage.getItem('preview-init')) return;
-    sessionStorage.setItem('preview-init', '1');
-    localStorage.clear();
-    // MMKV on the web keeps its values in localStorage as `<id>\<key>`.
-    const set = (key, value) => localStorage.setItem(`loqqa\\${key}`, JSON.stringify(value));
-    set('sb-127-auth-token', session);
-    set('onboarding', { state: { completed: true, draft: { firstName: 'Alex' } }, version: 0 });
-    set('subscription', {
-      state: { isPro: true, plan: 'yearly', trialEndsAt: null, checked: true },
-      version: 0,
-    });
-    set('purchases.mock.receipt', { isPro: true, plan: 'yearly', trialEndsAt: null });
-  }, session);
+/**
+ * Signs the browser context in (Pro, onboarded) and mocks Supabase and PowerSync. `language` is
+ * an app language (en, de, pt-PT, pt-BR, ko): the seed names the plan in it.
+ */
+async function prepare(context, { language = 'en' } = {}) {
+  await context.addInitScript(
+    ({ session, language }) => {
+      window.__previewLanguage = language;
+      if (sessionStorage.getItem('preview-init')) return;
+      sessionStorage.setItem('preview-init', '1');
+      localStorage.clear();
+      // MMKV on the web keeps its values in localStorage as `<id>\<key>`.
+      const set = (key, value) => localStorage.setItem(`loqqa\\${key}`, JSON.stringify(value));
+      set('sb-127-auth-token', session);
+      set('onboarding', { state: { completed: true, draft: { firstName: 'Alex' } }, version: 0 });
+      set('subscription', {
+        state: { isPro: true, plan: 'yearly', trialEndsAt: null, checked: true },
+        version: 0,
+      });
+      set('purchases.mock.receipt', { isPro: true, plan: 'yearly', trialEndsAt: null });
+    },
+    { session, language },
+  );
   await context.route('**/*.wasm', (route) => {
     const file = wasmFile(path.basename(new URL(route.request().url()).pathname));
     route.fulfill({ status: 200, contentType: 'application/wasm', body: fs.readFileSync(file) });

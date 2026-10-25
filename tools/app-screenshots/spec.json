@@ -36,8 +36,8 @@
   },
   {
     "name": "exercise-history",
-    "route": "/exercise/bench-press",
-    "click": ["History", "90 D"]
+    "route": "/exercise/bench-press/history",
+    "tap": [[337, 687]]
   },
   {
     "name": "weight",
@@ -58,7 +58,7 @@
   {
     "name": "routine",
     "route": "/routine/:id",
-    "sql": "select id from routines where name = 'Lower B'"
+    "sql": "select id from routines where position = 3"
   },
   {
     "name": "plan-import",
@@ -71,10 +71,10 @@
   {
     "name": "workout",
     "route": "/routine/:id",
-    "sql": "select id from routines where name = 'Lower B'",
-    "click": ["Start workout"],
+    "sql": "select id from routines where position = 3",
     "wait": 2500,
     "tap": [
+      [201, 814, 2000],
       [216, 457],
       [58, 652],
       [155, 704],

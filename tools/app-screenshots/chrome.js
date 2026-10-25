@@ -18,12 +18,7 @@ const ICONS = {
       : `<svg viewBox="0 0 28 28" width="27" height="27"><circle cx="14" cy="14" r="11.1" fill="none" stroke="${c}" stroke-width="1.8"/><circle cx="14" cy="11" r="4" fill="none" stroke="${c}" stroke-width="1.8"/><path d="M7 21.4c1.6-2.6 4.1-3.9 7-3.9s5.4 1.3 7 3.9" fill="none" stroke="${c}" stroke-width="1.8"/></svg>`,
 };
 
-const TABS = [
-  ['training', 'Training'],
-  ['level', 'Level'],
-  ['body', 'Body'],
-  ['profile', 'Profile'],
-];
+const TABS = ['training', 'level', 'body', 'profile'];
 
 function statusBar() {
   return `<div style="position:fixed;left:0;right:0;top:0;height:54px;z-index:2147483646;pointer-events:none;display:flex;align-items:center;justify-content:space-between;padding:6px 34px 0 50px;box-sizing:border-box;color:#fff;font:600 17px/1 -apple-system,'SF Pro Text','Inter',sans-serif;letter-spacing:-0.2px">
@@ -35,13 +30,14 @@ function statusBar() {
     </span></div>`;
 }
 
-function tabBar(active) {
-  const items = TABS.map(([key, label]) => {
+function tabBar(active, labels) {
+  const items = TABS.map((key) => {
+    const label = labels[key];
     const on = key === active;
     const color = on ? ACCENT : SUBTLE;
     return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;height:54px;border-radius:27px;${on ? 'background:rgba(255,255,255,0.11);' : ''}">
       ${ICONS[key](color, on)}
-      <span style="font:${on ? 600 : 500} 10px/12px -apple-system,'SF Pro Text','Inter',sans-serif;color:${color};letter-spacing:0.1px">${label}</span></div>`;
+      <span style="font:${on ? 600 : 500} 10px/12px -apple-system,'SF Pro Text','Inter','Preview KR',sans-serif;color:${color};letter-spacing:0.1px">${label}</span></div>`;
   }).join('');
   const glass =
     'background:rgba(30,30,30,0.72);backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);box-shadow:inset 0 0.5px 0 rgba(255,255,255,0.22),inset 0 0 0 0.5px rgba(255,255,255,0.08),0 8px 24px rgba(0,0,0,0.45);';
@@ -51,8 +47,11 @@ function tabBar(active) {
       <svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 3v18M3 12h18" stroke="${SUBTLE}" stroke-width="2.4" stroke-linecap="round"/></svg></div></div>`;
 }
 
-/** Adds the status bar, and the tab bar with `tab` selected (none on pushed screens). */
-async function addChrome(page, { tab = null, home = false } = {}) {
+/**
+ * Adds the status bar, and the tab bar with `tab` selected (none on pushed screens), labelled
+ * with the app's `tabs` translations.
+ */
+async function addChrome(page, { tab = null, home = false, labels } = {}) {
   await page.evaluate(
     ({ html }) => {
       document.getElementById('preview-chrome')?.remove();
@@ -61,7 +60,7 @@ async function addChrome(page, { tab = null, home = false } = {}) {
       el.innerHTML = html;
       document.body.appendChild(el);
     },
-    { html: statusBar() + (tab ? tabBar(tab) : '') + (home ? homeIndicator() : '') },
+    { html: statusBar() + (tab ? tabBar(tab, labels) : '') + (home ? homeIndicator() : '') },
   );
 }
 
