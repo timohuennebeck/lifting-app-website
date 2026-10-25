@@ -1,0 +1,90 @@
+[
+  {
+    "name": "training",
+    "route": "/",
+    "tab": "training"
+  },
+  {
+    "name": "level",
+    "route": "/level",
+    "tab": "level"
+  },
+  {
+    "name": "level-muscles",
+    "route": "/level",
+    "tab": "level",
+    "scroll": 520
+  },
+  {
+    "name": "body",
+    "route": "/body",
+    "tab": "body"
+  },
+  {
+    "name": "profile",
+    "route": "/profile",
+    "tab": "profile"
+  },
+  {
+    "name": "workout-summary",
+    "route": "/workout/summary/:id",
+    "sql": "select id from workout_entries where finished_at is not null order by started_at desc limit 1"
+  },
+  {
+    "name": "exercise",
+    "route": "/exercise/bench-press"
+  },
+  {
+    "name": "exercise-history",
+    "route": "/exercise/bench-press",
+    "click": ["History", "90 D"]
+  },
+  {
+    "name": "weight",
+    "route": "/body-weight"
+  },
+  {
+    "name": "progress-check",
+    "route": "/progress-check/result/00000000-0000-4000-8000-0000000000c2"
+  },
+  {
+    "name": "compare",
+    "route": "/body-compare"
+  },
+  {
+    "name": "ranks",
+    "route": "/ranks"
+  },
+  {
+    "name": "routine",
+    "route": "/routine/:id",
+    "sql": "select id from routines where name = 'Lower B'"
+  },
+  {
+    "name": "plan-import",
+    "route": "/plan/import"
+  },
+  {
+    "name": "paywall",
+    "route": "/pro"
+  },
+  {
+    "name": "workout",
+    "route": "/routine/:id",
+    "sql": "select id from routines where name = 'Lower B'",
+    "click": ["Start workout"],
+    "wait": 2500,
+    "tap": [
+      [216, 457],
+      [58, 652],
+      [155, 704],
+      [204, 808],
+      [347, 782],
+      [155, 704],
+      [347, 782]
+    ],
+    "after": [
+      "update workout_entries set started_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now', '-6 minutes', '-12 seconds') where finished_at is null"
+    ]
+  }
+]

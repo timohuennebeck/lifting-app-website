@@ -1,3 +1,4 @@
 package-lock.json
 dist/
 .astro/
+tools/app-screenshots/.work/

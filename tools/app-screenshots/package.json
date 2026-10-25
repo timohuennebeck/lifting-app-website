@@ -1,0 +1,11 @@
+{
+  "name": "loqqa-app-screenshots",
+  "private": true,
+  "description": "Screenshots of the Loqqa app for the website, from its web build",
+  "scripts": {
+    "shoot": "node shoot.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.63.0"
+  }
+}
