@@ -30,8 +30,10 @@ src/
   pages/           one file per route
   layouts/         the HTML shell (meta tags, global styles)
   styles/          global.css: Tailwind and the design tokens
-  assets/          images Astro optimizes at build time
+  assets/          images Astro optimizes at build time; app-screens/ holds the app's screens
 public/            files served as they are (favicon)
+tools/
+  app-screenshots/ captures the phone screens from the real app (see its README)
 ```
 
 ## Hosting
