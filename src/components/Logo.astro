@@ -1,0 +1,19 @@
+---
+import { pathOf, type Locale } from '@/i18n/locales';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+---
+
+<a href={pathOf(locale, 'home')} class="flex items-center gap-2.5" aria-label="Loqqa">
+  <span class="flex size-[30px] shrink-0 rounded-[7px] bg-ink lg:size-[34px] lg:rounded-[8px]">
+    <svg viewBox="0 0 300 300" class="size-full" aria-hidden="true">
+      <rect x="84" y="52" width="72" height="126" fill="#F2F1EC"></rect>
+      <rect x="84" y="192" width="138" height="56" fill="#F2F1EC"></rect>
+    </svg>
+  </span>
+  <span class="text-xl font-semibold tracking-[-0.03em] lg:text-[22px]">Loqqa</span>
+</a>

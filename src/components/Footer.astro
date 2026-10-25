@@ -1,0 +1,37 @@
+---
+import { pathOf, type Locale, type Page } from '@/i18n/locales';
+import { STRINGS } from '@/i18n/strings';
+
+interface Props {
+  locale: Locale;
+  page: Page;
+}
+
+const { locale, page } = Astro.props;
+const { footer } = STRINGS[locale.code];
+const links = [
+  { page: 'privacy', label: footer.privacy },
+  { page: 'imprint', label: footer.imprint },
+  { page: 'terms', label: footer.terms },
+] as const;
+---
+
+<footer
+  class:list={[
+    'flex flex-col items-center gap-3 p-6 text-[13px] text-muted lg:flex-row-reverse lg:justify-between lg:px-16 lg:py-7 lg:text-sm',
+    page !== 'home' && 'border-t border-rule',
+  ]}
+>
+  <nav class="flex flex-wrap justify-center gap-x-6 gap-y-2">
+    {links.map((link) => (
+      <a
+        href={pathOf(locale, link.page)}
+        aria-current={link.page === page ? 'page' : undefined}
+        class:list={[link.page === page && 'font-semibold text-ink']}
+      >
+        {link.label}
+      </a>
+    ))}
+  </nav>
+  <div>© 2026 Loqqa</div>
+</footer>

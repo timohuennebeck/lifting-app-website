@@ -1,27 +1,76 @@
 @import 'tailwindcss';
 @import '@fontsource-variable/inter';
 
-/* Design tokens from the app (lifting-app src/global.css): dark only, neon accent. */
+/* The landing page design: light paper with the app's black and neon. */
 @theme {
   --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
 
-  --color-bg: #0a0a0a;
-  --color-surface: #141414;
-  --color-elevated: #1f1f1f;
-  --color-control: #262626;
-  --color-line: #2a2a28;
-  --color-fg: #f4f4f0;
-  --color-fg-2: #c9c9c4;
-  --color-muted: #a3a39e;
+  --color-ink: #0a0a0a;
+  --color-paper: #f4f4f0;
+  --color-sand: #e8e4da;
+  --color-rule: #dedbd2;
+  --color-body: #3a3934;
+  --color-lead: #4a4944;
+  --color-copy: #5c5a54;
+  --color-muted: #6e6e6a;
+  --color-faint: #9a988f;
   --color-subtle: #8c8c87;
-  --color-dim: #6e6e6a;
-  --color-on-accent: #0a0a0a;
+  --color-mist: #a3a39e;
   --color-accent: #dfff1f;
 }
 
 @layer base {
   html {
-    color-scheme: dark;
-    @apply bg-bg font-sans text-fg antialiased;
+    color-scheme: light;
+    @apply bg-paper font-sans text-ink antialiased;
+  }
+  a:hover {
+    opacity: 0.8;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  /* Hangul: break between words only, and the Latin display tracking would crowd it. */
+  :lang(ko) {
+    word-break: keep-all;
+  }
+  :where(h1, h2):lang(ko) {
+    letter-spacing: -0.02em;
+  }
+}
+
+/*
+ * An iPhone around an app screenshot, sized by its height (--h). Proportions of an iPhone 17 Pro:
+ * a 402×874 pt screen in a 12 pt bezel, the Dynamic Island 11 pt below the screen's top.
+ */
+@utility phone {
+  position: relative;
+  flex-shrink: 0;
+  height: var(--h);
+  width: calc(var(--h) * 0.4744);
+  padding: calc(var(--h) * 0.0134);
+  border-radius: calc(var(--h) * 0.0745);
+  background: #0b0b0b;
+  box-shadow:
+    inset 0 0 0 1.5px #2e2e2c,
+    inset 0 0 0 3px #0b0b0b;
+
+  & > img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: calc(var(--h) * 0.0612);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: calc(var(--h) * 0.0256);
+    left: 50%;
+    width: calc(var(--h) * 0.1403);
+    height: calc(var(--h) * 0.0412);
+    border-radius: 999px;
+    background: #000;
+    translate: -50% 0;
   }
 }

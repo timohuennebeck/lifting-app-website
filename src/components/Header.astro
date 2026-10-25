@@ -1,0 +1,30 @@
+---
+import LanguageSwitcher from '@/components/LanguageSwitcher.astro';
+import Logo from '@/components/Logo.astro';
+import StoreButton from '@/components/StoreButton.astro';
+import type { Locale, Page } from '@/i18n/locales';
+import { STRINGS } from '@/i18n/strings';
+
+interface Props {
+  locale: Locale;
+  page: Page;
+}
+
+const { locale, page } = Astro.props;
+const { nav } = STRINGS[locale.code];
+// The home page's hero has the download button on wide screens, so the header leaves it out.
+const home = page === 'home';
+---
+
+<header class="flex items-center justify-between px-6 py-5 lg:px-16 lg:py-7">
+  <Logo locale={locale} />
+  <div class="flex items-center gap-2 lg:gap-3">
+    <LanguageSwitcher locale={locale} page={page} />
+    <StoreButton
+      class:list={['h-9 px-3.5 text-[13px] lg:h-11 lg:px-5 lg:text-[15px]', home && 'lg:hidden']}
+    >
+      <span class="sm:hidden">{nav.downloadShort}</span>
+      <span class="hidden sm:inline">{nav.download}</span>
+    </StoreButton>
+  </div>
+</header>
