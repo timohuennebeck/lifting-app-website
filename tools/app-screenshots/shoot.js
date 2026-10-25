@@ -115,10 +115,14 @@ const runSql = (page, sqls) =>
     }
     if (shot.scroll) {
       await page.evaluate((y) => {
+        // The tallest vertical scroller on screen (pager tabs keep theirs off to the side).
         const scrollers = [...document.querySelectorAll('div')].filter((d) => {
           const s = getComputedStyle(d);
           const scrolls = s.overflowY === 'auto' || s.overflowY === 'scroll';
-          return scrolls && d.scrollHeight > d.clientHeight + 10 && d.clientHeight > 300;
+          const onScreen = d.getBoundingClientRect().x >= 0;
+          return (
+            scrolls && onScreen && d.scrollHeight > d.clientHeight + 10 && d.clientHeight > 300
+          );
         });
         const target = scrollers.sort((a, b) => b.clientHeight - a.clientHeight)[0];
         if (target) target.scrollTop = y;
