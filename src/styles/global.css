@@ -1,0 +1,27 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/inter';
+
+/* Design tokens from the app (lifting-app src/global.css): dark only, neon accent. */
+@theme {
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+
+  --color-bg: #0a0a0a;
+  --color-surface: #141414;
+  --color-elevated: #1f1f1f;
+  --color-control: #262626;
+  --color-line: #2a2a28;
+  --color-fg: #f4f4f0;
+  --color-fg-2: #c9c9c4;
+  --color-muted: #a3a39e;
+  --color-subtle: #8c8c87;
+  --color-dim: #6e6e6a;
+  --color-on-accent: #0a0a0a;
+  --color-accent: #dfff1f;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    @apply bg-bg font-sans text-fg antialiased;
+  }
+}
