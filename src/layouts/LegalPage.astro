@@ -1,0 +1,80 @@
+---
+import type { LegalSection } from '@/lib/legal-sections';
+import { pathOf, type Locale, type Page } from '@/i18n/locales';
+import { STRINGS } from '@/i18n/strings';
+import Layout from '@/layouts/Layout.astro';
+
+interface Props {
+  locale: Locale;
+  page: Exclude<Page, 'home'>;
+  title: string;
+  /** The date line, e.g. "Stand: 24. Oktober 2026". */
+  updated?: string;
+  /** Sections for the table of contents; none on short pages. */
+  sections?: LegalSection[];
+  /** Language of the text when it isn't the page's (Korean pages show the English text). */
+  textLang?: string;
+}
+
+const { locale, page, title, updated, sections = [], textLang } = Astro.props;
+const t = STRINGS[locale.code];
+const pad = (num: string) => num.padStart(2, '0');
+---
+
+<Layout locale={locale} page={page} title={`${title} – Loqqa`} description={title}>
+  <main>
+    <div class="flex flex-col gap-4 px-6 pt-10 pb-8 lg:gap-5 lg:px-16 lg:pt-[72px] lg:pb-14">
+      <a href={pathOf(locale, 'home')} class="text-sm font-semibold text-muted">
+        ← {t.legal.back}
+      </a>
+      <h1
+        lang={textLang}
+        class="max-w-[900px] text-[40px] leading-none font-semibold tracking-[-0.05em] hyphens-auto lg:text-[76px] lg:leading-[0.95] lg:tracking-[-0.055em]"
+      >
+        {title}
+      </h1>
+      {updated && (
+        <p lang={textLang} class="text-sm text-muted lg:text-[15px]">
+          {updated}
+        </p>
+      )}
+      {textLang && t.legal.englishOnly && <p class="text-sm text-muted">{t.legal.englishOnly}</p>}
+    </div>
+    <div
+      class:list={[
+        'lg:px-16 lg:pb-[120px]',
+        sections.length > 0 &&
+          'lg:grid lg:grid-cols-[300px_minmax(0,1fr)] lg:items-start lg:gap-24',
+      ]}
+    >
+      {sections.length > 0 && (
+        <nav
+          aria-label={t.legal.contents}
+          class="mx-3 flex flex-col rounded-[20px] bg-sand px-5 pt-4 pb-2 lg:sticky lg:top-6 lg:mx-0 lg:max-h-[calc(100dvh-48px)] lg:gap-2 lg:overflow-y-auto lg:p-6"
+        >
+          <p class="pb-2 text-xs font-semibold tracking-[0.12em] text-muted uppercase lg:pb-1.5 lg:text-[13px]">
+            {t.legal.contents}
+          </p>
+          {sections.map((section) => (
+            <a
+              href={`#${section.slug}`}
+              lang={textLang}
+              class="flex gap-3 border-t border-rule py-2.5 text-[15px] leading-[1.4] text-lead lg:border-t-0 lg:py-1.5"
+            >
+              <span class="w-[2ch] shrink-0 text-faint tabular-nums">
+                {section.num && pad(section.num)}
+              </span>
+              <span>{section.title}</span>
+            </a>
+          ))}
+        </nav>
+      )}
+      <article
+        lang={textLang}
+        class:list={['legal-text px-6 pt-12 pb-[72px] lg:px-0 lg:pt-0 lg:pb-0', `legal-${page}`]}
+      >
+        <slot />
+      </article>
+    </div>
+  </main>
+</Layout>

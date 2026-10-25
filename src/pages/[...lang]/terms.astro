@@ -1,0 +1,29 @@
+---
+import { getEntry, render } from 'astro:content';
+
+import { localePaths, type Locale } from '@/i18n/locales';
+import LegalPage from '@/layouts/LegalPage.astro';
+import { legalSections } from '@/lib/legal-sections';
+
+export const getStaticPaths = localePaths;
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const entry = await getEntry('legal', `${locale.legal.toLowerCase()}/terms`);
+if (!entry) throw new Error(`No terms for ${locale.legal}`);
+const { Content } = await render(entry);
+---
+
+<LegalPage
+  locale={locale}
+  page="terms"
+  title={entry.data.title}
+  updated={entry.data.updated}
+  sections={legalSections(entry.body ?? '')}
+  textLang={locale.legal === locale.code ? undefined : locale.legal}
+>
+  <Content />
+</LegalPage>

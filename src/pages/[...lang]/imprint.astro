@@ -1,0 +1,46 @@
+---
+import { OPERATOR } from '@/config';
+import { localePaths, type Locale } from '@/i18n/locales';
+import { STRINGS } from '@/i18n/strings';
+import LegalPage from '@/layouts/LegalPage.astro';
+
+export const getStaticPaths = localePaths;
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = STRINGS[locale.code].imprint;
+---
+
+<LegalPage locale={locale} page="imprint" title={t.title}>
+  <section class="legal-section">
+    <div class="legal-heading">
+      <h2>{t.basis}</h2>
+    </div>
+    <p>
+      {OPERATOR.name}
+      <br />
+      {OPERATOR.street}
+      <br />
+      {OPERATOR.city}
+      <br />
+      {t.country}
+    </p>
+  </section>
+  <section class="legal-section">
+    <div class="legal-heading">
+      <h2>{t.contact}</h2>
+    </div>
+    <p>
+      {t.email}: <a href={`mailto:${OPERATOR.email}`}>{OPERATOR.email}</a>
+    </p>
+  </section>
+  <section class="legal-section">
+    <div class="legal-heading">
+      <h2>{t.disputes}</h2>
+    </div>
+    <p>{t.disputesText}</p>
+  </section>
+</LegalPage>
