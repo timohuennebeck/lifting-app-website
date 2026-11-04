@@ -55,8 +55,11 @@ node shoot.js --lang de --only training,workout,exercise-history   # the landing
 
 Without Docker, plain Postgres works too: create a database, run `supabase-stubs.sql` (the
 roles, `auth` and `storage` bits Supabase provides), then every file in
-`lifting-app/supabase/migrations/` in order, and pass its URL to `./catalog.sh`. The support desk's
-two migrations (`support_desk`, `message_translations`) fail there; the catalog doesn't need them.
+`lifting-app/supabase/migrations/` in order, and pass its URL to `./catalog.sh`. One migration
+creates `pg_net`, which plain Postgres doesn't have. An empty stand-in will do: in the `extension/`
+folder under `pg_config --sharedir`, a `pg_net.control` with the line `default_version = '1.0'` and
+an empty `pg_net--1.0.sql`. Postgres 18 can keep them outside the install: put them in
+`<folder>/extension/` and set `extension_control_path` to `<folder>:$system`.
 
 ## The screens
 
