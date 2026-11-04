@@ -4,7 +4,8 @@ create role authenticator login; create role supabase_admin superuser; create ro
 create schema auth; create schema storage; create schema extensions; create schema vault; create schema net;
 create extension pgcrypto with schema extensions;
 create extension "uuid-ossp" with schema extensions;
-create table auth.users (id uuid primary key default gen_random_uuid(), email text, raw_user_meta_data jsonb, raw_app_meta_data jsonb, created_at timestamptz default now());
+create table auth.users (id uuid primary key default gen_random_uuid(), email text, raw_user_meta_data jsonb, raw_app_meta_data jsonb, is_anonymous boolean not null default false, last_sign_in_at timestamptz, created_at timestamptz default now());
+create table auth.sessions (id uuid primary key default gen_random_uuid(), user_id uuid references auth.users(id), created_at timestamptz default now(), updated_at timestamptz default now());
 create function auth.uid() returns uuid language sql stable as $$ select null::uuid $$;
 create function auth.role() returns text language sql stable as $$ select 'service_role'::text $$;
 create function auth.jwt() returns jsonb language sql stable as $$ select '{}'::jsonb $$;
