@@ -1,11 +1,43 @@
 // Opens the app's web preview signed in, with Supabase mocked from the dumped catalog
-// (catalog.sh) and the progress-check photos taken from the app's own paywall images.
+// (catalog.sh), the exercise photos from MEDIA_URL's bucket and the progress-check photos taken
+// from the app's own paywall images.
 const fs = require('fs');
 const path = require('path');
 
 const WORK = path.join(__dirname, '.work');
 const MOCK = path.join(WORK, 'mock');
 const APP = path.join(WORK, 'app');
+const MEDIA = path.join(WORK, 'media');
+
+// The Supabase project whose public exercise-media bucket holds the exercise photos, e.g.
+// https://<project-ref>.supabase.co. Without it (and with nothing in .work/media) the app shows
+// its fallback tiles with initials.
+const MEDIA_URL = process.env.MEDIA_URL?.replace(/\/$/, '');
+const MEDIA_TYPES = { '.webp': 'image/webp', '.jpg': 'image/jpeg', '.png': 'image/png' };
+let warnedNoMedia = false;
+
+/** An exercise-media file from .work/media, downloaded from MEDIA_URL the first time. */
+async function exerciseMedia(objectPath) {
+  const file = path.join(MEDIA, objectPath);
+  if (!file.startsWith(MEDIA + path.sep)) return null;
+  if (!fs.existsSync(file) && MEDIA_URL) {
+    const source = `${MEDIA_URL}/storage/v1/object/public/exercise-media/${objectPath}`;
+    const res = await fetch(source).catch((e) => ({ ok: false, status: e.cause?.message ?? e }));
+    if (res.ok) {
+      fs.mkdirSync(path.dirname(file), { recursive: true });
+      fs.writeFileSync(`${file}.part`, Buffer.from(await res.arrayBuffer()));
+      fs.renameSync(`${file}.part`, file);
+    } else {
+      console.log(`[media] ${objectPath}: ${res.status}`);
+    }
+  }
+  if (fs.existsSync(file)) return file;
+  if (!MEDIA_URL && !warnedNoMedia) {
+    warnedNoMedia = true;
+    console.log('[media] no MEDIA_URL: exercises show their initials instead of photos');
+  }
+  return null;
+}
 
 const USER_ID = '6f1c2a3e-5b7d-4e8f-9a0b-1c2d3e4f5a6b';
 const user = {
@@ -102,7 +134,7 @@ async function prepare(context, { language = 'en' } = {}) {
     const file = wasmFile(path.basename(new URL(route.request().url()).pathname));
     route.fulfill({ status: 200, contentType: 'application/wasm', body: fs.readFileSync(file) });
   });
-  await context.route('http://127.0.0.1:55321/**', (route) => {
+  await context.route('http://127.0.0.1:55321/**', async (route) => {
     const url = new URL(route.request().url());
     const [, api, , resource] = url.pathname.split('/');
     if (api === 'rest') {
@@ -111,6 +143,14 @@ async function prepare(context, { language = 'en' } = {}) {
       return json(route, single ? (rows[0] ?? null) : rows);
     }
     if (api === 'auth') return json(route, url.pathname.endsWith('/user') ? user : session);
+    // /storage/v1/object/public/exercise-media/<path>: the exercise photos and thumbnails.
+    const mediaPath = url.pathname.split('/object/public/exercise-media/')[1];
+    if (api === 'storage' && mediaPath) {
+      const file = await exerciseMedia(decodeURIComponent(mediaPath));
+      if (!file) return route.fulfill({ status: 404, body: '' });
+      const contentType = MEDIA_TYPES[path.extname(file)] ?? 'application/octet-stream';
+      return route.fulfill({ status: 200, contentType, path: file });
+    }
     if (api === 'storage') {
       // /storage/v1/object/sign/<bucket>/<path>: POST signs, GET serves the photo.
       const objectPath = url.pathname.split('/object/sign/')[1] ?? '';

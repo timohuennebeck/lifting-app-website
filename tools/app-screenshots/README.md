@@ -22,8 +22,11 @@ The app has no web build, so `setup.sh` prepares one in `.work/app`, a git workt
 - **Safe area**: the browser reports none, so the iPhone's insets (62 pt top, 34 pt bottom) are
   patched into `react-native-safe-area-context`.
 
-`harness.js` signs the browser in (Pro, onboarded), answers Supabase from the dumped catalog
-and serves the app's own paywall photos as the progress-check photos. `chrome.js` draws what
+`harness.js` signs the browser in (Pro, onboarded), answers Supabase from the dumped catalog,
+serves the exercise photos and thumbnails from a Supabase project's public `exercise-media` bucket
+(`MEDIA_URL`, downloaded once into `.work/media`) and the app's own paywall photos as the
+progress-check photos. Without `MEDIA_URL` the exercises show their initials, as the app does when
+a photo can't load. `chrome.js` draws what
 iOS draws around the app: the status bar, the home indicator and the native tab bar, as
 `NativeTabs` configures it (iOS 26 style, `#DFFF1F` tint, "+" detached on the right), labelled
 with the app's own `tabs` translations. For Korean, Noto Sans KR stands in for the iOS system
@@ -43,13 +46,16 @@ npm install && npx playwright install chromium
 ./catalog.sh
 
 (cd .work/app && npx expo start --web --port 8081)   # keep it running
+export MEDIA_URL=https://<project-ref>.supabase.co   # the project with the exercise photos
 node shoot.js                        # all screens in spec.json, in English
 node shoot.js --lang de --only training,workout,exercise-history   # the landing page's three
 ```
 
 Without Docker, plain Postgres works too: create a database, run `supabase-stubs.sql` (the
 roles, `auth` and `storage` bits Supabase provides), then every file in
-`lifting-app/supabase/migrations/` in order, and pass its URL to `./catalog.sh`.
+`lifting-app/supabase/migrations/` in order, and pass its URL to `./catalog.sh`. One migration
+creates `pg_net`; an empty stand-in will do (a `pg_net.control` and an empty `pg_net--1.0.sql` in
+the directory `pg_config --sharedir` names, under `extension/`).
 
 ## The screens
 
