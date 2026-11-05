@@ -18,13 +18,18 @@ The app has no web build, so `setup.sh` prepares one in `.work/app`, a git workt
   - `file-system.ts`: no local files, so progress-check photos load from (mocked) storage.
   - `seed.ts`: the account "Alex": an upper/lower plan of four workouts a week in its ninth
     week (named in the app language, as the plan generation would), every workout logged with
-    steady progress, ten weeks of body weight and two progress checks.
+    steady progress up to yesterday, two workouts outside the plan, ten weeks of body weight and
+    two progress checks.
 - **Safe area**: the browser reports none, so the iPhone's insets (62 pt top, 34 pt bottom) are
   patched into `react-native-safe-area-context`.
+- **Week strip**: the web ignores `contentOffset`, so `setup.sh` removes it from the strip's list,
+  which then scrolls to this week itself.
 
-`harness.js` signs the browser in (Pro, onboarded), answers Supabase from the dumped catalog
-and serves the app's own paywall photos as the progress-check photos. `chrome.js` draws what
-iOS draws around the app: the status bar, the home indicator and the native tab bar, as
+`harness.js` signs the browser in (Pro, onboarded), answers Supabase from the dumped catalog,
+serves the exercise photos from the public `exercise-media` bucket of the Supabase project in
+`MEDIA_URL` (downloaded once to `.work/media`) and the app's own paywall photos as the
+progress-check photos. `chrome.js`
+draws what iOS draws around the app: the status bar, the home indicator and the native tab bar, as
 `NativeTabs` configures it (iOS 26 style, `#DFFF1F` tint, "+" detached on the right), labelled
 with the app's own `tabs` translations. For Korean, Noto Sans KR stands in for the iOS system
 font that draws Hangul next to Inter.
@@ -43,13 +48,15 @@ npm install && npx playwright install chromium
 ./catalog.sh
 
 (cd .work/app && npx expo start --web --port 8081)   # keep it running
+export MEDIA_URL=https://<project-ref>.supabase.co   # the project with the exercise photos
 node shoot.js                        # all screens in spec.json, in English
 node shoot.js --lang de --only training,workout,exercise-history   # the landing page's three
 ```
 
 Without Docker, plain Postgres works too: create a database, run `supabase-stubs.sql` (the
 roles, `auth` and `storage` bits Supabase provides), then every file in
-`lifting-app/supabase/migrations/` in order, and pass its URL to `./catalog.sh`.
+`lifting-app/supabase/migrations/` in order, and pass its URL to `./catalog.sh`. The support desk's
+two migrations (`support_desk`, `message_translations`) fail there; the catalog doesn't need them.
 
 ## The screens
 

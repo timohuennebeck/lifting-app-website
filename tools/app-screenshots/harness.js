@@ -1,11 +1,17 @@
 // Opens the app's web preview signed in, with Supabase mocked from the dumped catalog
-// (catalog.sh) and the progress-check photos taken from the app's own paywall images.
+// (catalog.sh), the exercise photos from MEDIA_URL's public bucket and the progress-check photos
+// taken from the app's own paywall images.
 const fs = require('fs');
 const path = require('path');
 
 const WORK = path.join(__dirname, '.work');
 const MOCK = path.join(WORK, 'mock');
 const APP = path.join(WORK, 'app');
+const MEDIA = path.join(WORK, 'media');
+
+// The Supabase project whose public exercise-media bucket holds the exercise photos, e.g.
+// https://<project-ref>.supabase.co
+const MEDIA_URL = process.env.MEDIA_URL?.replace(/\/$/, '');
 
 const USER_ID = '6f1c2a3e-5b7d-4e8f-9a0b-1c2d3e4f5a6b';
 const user = {
@@ -75,11 +81,35 @@ function postgrest(table, params) {
 const json = (route, body, status = 200) =>
   route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) });
 
+/** Downloads the catalog's photos and thumbnails once, so no shot waits on the network. */
+async function downloadMedia() {
+  const missing = tables.exercises
+    .flatMap((e) =>
+      e.image_path ? [e.image_path, e.image_path.replace(/\.webp$/, '-thumb.webp')] : [],
+    )
+    .filter((objectPath) => !fs.existsSync(path.join(MEDIA, objectPath)));
+  if (missing.length && !MEDIA_URL) {
+    throw new Error(`Set MEDIA_URL to download ${missing.length} exercise photos (see the README)`);
+  }
+  const download = async () => {
+    for (let objectPath = missing.pop(); objectPath; objectPath = missing.pop()) {
+      const bucket = `${MEDIA_URL}/storage/v1/object/public/exercise-media`;
+      const response = await fetch(`${bucket}/${encodeURI(objectPath)}`);
+      if (!response.ok) throw new Error(`${objectPath}: ${response.status}`);
+      const file = path.join(MEDIA, objectPath);
+      fs.mkdirSync(path.dirname(file), { recursive: true });
+      fs.writeFileSync(file, Buffer.from(await response.arrayBuffer()));
+    }
+  };
+  await Promise.all(Array.from({ length: 8 }, download));
+}
+
 /**
  * Signs the browser context in (Pro, onboarded) and mocks Supabase and PowerSync. `language` is
  * an app language (en, de, pt-PT, pt-BR, ko): the seed names the plan in it.
  */
 async function prepare(context, { language = 'en' } = {}) {
+  await downloadMedia();
   await context.addInitScript(
     ({ session, language }) => {
       window.__previewLanguage = language;
@@ -112,6 +142,11 @@ async function prepare(context, { language = 'en' } = {}) {
     }
     if (api === 'auth') return json(route, url.pathname.endsWith('/user') ? user : session);
     if (api === 'storage') {
+      const media = url.pathname.split('/object/public/exercise-media/')[1];
+      if (media) {
+        const file = path.join(MEDIA, decodeURI(media));
+        return route.fulfill({ status: 200, contentType: 'image/webp', path: file });
+      }
       // /storage/v1/object/sign/<bucket>/<path>: POST signs, GET serves the photo.
       const objectPath = url.pathname.split('/object/sign/')[1] ?? '';
       if (route.request().method() === 'POST') {

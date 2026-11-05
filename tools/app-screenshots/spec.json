@@ -2,7 +2,8 @@
   {
     "name": "training",
     "route": "/",
-    "tab": "training"
+    "tab": "training",
+    "scrollToItem": 1
   },
   {
     "name": "level",
@@ -37,7 +38,7 @@
   {
     "name": "exercise-history",
     "route": "/exercise/bench-press/history",
-    "tap": [[337, 687]]
+    "tap": [[337, 756]]
   },
   {
     "name": "weight",

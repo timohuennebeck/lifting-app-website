@@ -107,21 +107,32 @@ const ROUTINES: { lifts: Lift[] }[] = [
 ];
 
 /** Plan and routine names as the plan generation writes them, per app language. */
-const NAMES: Record<string, { plan: string; routines: string[] }> = {
-  en: { plan: 'Upper / Lower 4×', routines: ['Upper A', 'Lower A', 'Upper B', 'Lower B'] },
+const NAMES: Record<string, { plan: string; routines: string[]; singles: string[] }> = {
+  en: {
+    plan: 'Upper / Lower 4×',
+    routines: ['Upper A', 'Lower A', 'Upper B', 'Lower B'],
+    singles: ['Shoulders & arms', 'Legs & core'],
+  },
   de: {
     plan: 'Oberkörper / Unterkörper 4×',
     routines: ['Oberkörper A', 'Unterkörper A', 'Oberkörper B', 'Unterkörper B'],
+    singles: ['Schultern & Arme', 'Beine & Rumpf'],
   },
   'pt-PT': {
     plan: 'Superior / Inferior 4×',
     routines: ['Superior A', 'Inferior A', 'Superior B', 'Inferior B'],
+    singles: ['Ombros e braços', 'Pernas e core'],
   },
   'pt-BR': {
     plan: 'Superior / Inferior 4×',
     routines: ['Superior A', 'Inferior A', 'Superior B', 'Inferior B'],
+    singles: ['Ombros e braços', 'Pernas e core'],
   },
-  ko: { plan: '상체 / 하체 4×', routines: ['상체 A', '하체 A', '상체 B', '하체 B'] },
+  ko: {
+    plan: '상체 / 하체 4×',
+    routines: ['상체 A', '하체 A', '상체 B', '하체 B'],
+    singles: ['어깨와 팔', '하체와 코어'],
+  },
 };
 
 /** Plate-friendly weights: 2.5 kg steps for barbells and stacks, 1 kg for dumbbells. */
@@ -213,18 +224,23 @@ export async function seedPreview(db: any) {
     created_at: iso(created),
   });
 
-  const routineIds = ROUTINES.map((routine, position) => {
+  const addRoutine = (
+    routinePlanId: string | null,
+    name: string,
+    position: number,
+    lifts: (typeof ROUTINES)[number]['lifts'],
+  ) => {
     const id = uuid();
     insert('routines', {
       id,
       user_id: USER_ID,
-      plan_id: planId,
-      name: names.routines[position],
+      plan_id: routinePlanId,
+      name,
       position,
       created_at: iso(created),
       updated_at: iso(created),
     });
-    routine.lifts.forEach((lift, liftPosition) => {
+    lifts.forEach((lift, liftPosition) => {
       const exerciseId = uuid();
       insert('routine_exercises', {
         id: exerciseId,
@@ -247,9 +263,16 @@ export async function seedPreview(db: any) {
       }
     });
     return id;
-  });
+  };
+  const routineIds = ROUTINES.map((routine, position) =>
+    addRoutine(planId, names.routines[position], position, routine.lifts),
+  );
+  // Two workouts outside the plan, so the Training tab scrolls past Kai to the whole plan.
+  addRoutine(null, names.singles[0], 0, ROUTINES[2].lifts.slice(3));
+  addRoutine(null, names.singles[1], 1, ROUTINES[3].lifts.slice(2));
 
-  // Plan weeks 1–8 fully done (Mon, Tue, Thu, Fri), week 9 with three of four this week.
+  // Plan weeks 1–8 fully done (Mon, Tue, Thu, Fri), week 9 with three of four this week, up to
+  // yesterday: the status bar reads 9:41, before today's evening workout.
   const best: Record<string, number> = {};
   const sessions: { week: number; routine: number; day: number }[] = [];
   for (let week = 1; week <= 9; week++) {
@@ -260,7 +283,7 @@ export async function seedPreview(db: any) {
     });
   }
   for (const { week, routine, day } of sessions) {
-    if (day > todayStart) continue;
+    if (day >= todayStart) continue;
     const { lifts } = ROUTINES[routine];
     const name = names.routines[routine];
     const start = atLocal(day, 18, Math.floor(random() * 40));
