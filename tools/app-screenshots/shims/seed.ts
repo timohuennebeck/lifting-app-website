@@ -133,6 +133,16 @@ const NAMES: Record<string, { plan: string; routines: string[]; singles: string[
     routines: ['상체 A', '하체 A', '상체 B', '하체 B'],
     singles: ['어깨와 팔', '하체와 코어'],
   },
+  es: {
+    plan: 'Torso / Pierna 4×',
+    routines: ['Torso A', 'Pierna A', 'Torso B', 'Pierna B'],
+    singles: ['Hombros y brazos', 'Piernas y core'],
+  },
+  fr: {
+    plan: 'Haut / Bas 4×',
+    routines: ['Haut A', 'Bas A', 'Haut B', 'Bas B'],
+    singles: ['Épaules et bras', 'Jambes et abdos'],
+  },
 };
 
 /** Plate-friendly weights: 2.5 kg steps for barbells and stacks, 1 kg for dumbbells. */

@@ -106,7 +106,7 @@ async function downloadMedia() {
 
 /**
  * Signs the browser context in (Pro, onboarded) and mocks Supabase and PowerSync. `language` is
- * an app language (en, de, pt-PT, pt-BR, ko): the seed names the plan in it.
+ * an app language (en, de, pt-PT, pt-BR, ko, es, fr): the seed names the plan in it.
  */
 async function prepare(context, { language = 'en' } = {}) {
   await downloadMedia();

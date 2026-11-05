@@ -25,6 +25,8 @@ const BROWSER_LOCALES = {
   'pt-PT': 'pt-PT',
   'pt-BR': 'pt-BR',
   ko: 'ko-KR',
+  es: 'es-ES',
+  fr: 'fr-FR',
 };
 
 // iOS draws Hangul in its system font; the preview's Inter has none, so Noto Sans KR stands in,

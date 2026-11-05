@@ -68,6 +68,6 @@ the muscles, a running workout, a workout summary, an exercise and its history, 
 history, a progress check result and its comparison, the ranks, a routine, the plan import and
 the paywall. Each entry is a route plus optional taps; see the top of `shoot.js`. The website
 uses `training`, `workout` and `exercise-history` in every language (`en`, `de`, `pt-PT`,
-`pt-BR`, `ko`); the rest exist in English.
+`pt-BR`, `ko`, `es`, `fr`); the rest exist in English.
 
 The clock in the status bar always reads 9:41; dates in the app follow the day it runs.

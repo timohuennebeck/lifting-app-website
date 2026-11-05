@@ -282,4 +282,120 @@ export const STRINGS: Record<LocaleCode, Strings> = {
       disputesText: '당사는 소비자 중재 기관의 분쟁 해결 절차에 참여할 의사나 의무가 없습니다.',
     },
   },
+  es: {
+    meta: {
+      title: 'Loqqa – App de entrenamiento para iPhone',
+      description:
+        'Loqqa te guía por tu plan, recuerda cada peso y te muestra lo que tienes que superar la próxima vez.',
+    },
+    nav: { language: 'Idioma', download: 'Descargar en la App Store', downloadShort: 'Obtener' },
+    hero: {
+      eyebrow: 'App de entrenamiento para iPhone',
+      title: 'Loqqa lo recuerda todo. Tú levantas.',
+      lead: 'Loqqa te guía por tu plan, recuerda cada peso y te muestra lo que tienes que superar la próxima vez.',
+      note: 'Empieza gratis',
+    },
+    screens: {
+      plan: 'Loqqa: plan de entrenamiento con los entrenamientos de la semana',
+      workout: 'Loqqa: entrenamiento en curso con peso y repeticiones de cada serie',
+      history: 'Loqqa: evolución del peso máximo de un ejercicio',
+    },
+    features: [
+      { title: 'Tu plan', text: 'Todos tus entrenamientos de un vistazo. Un toque y a entrenar.' },
+      {
+        title: 'Series en segundos',
+        text: 'Peso y repeticiones con un solo pulgar. Tu último valor ya está ahí.',
+      },
+      { title: 'Cada récord guardado', text: 'Tu historial de cada ejercicio, serie a serie.' },
+    ],
+    bodyCheck: {
+      eyebrow: 'Control corporal',
+      title: 'Mira qué cambia.',
+      text: 'Una foto cada pocas semanas. Loqqa pone los controles uno al lado del otro.',
+      before: {
+        label: 'Control A · 13 abr',
+        weight: '68,2 kg',
+        alt: 'Control corporal del 13 de abril',
+      },
+      after: {
+        label: 'Control B · 7 sep',
+        weight: '64,1 kg',
+        alt: 'Control corporal del 7 de septiembre',
+      },
+    },
+    closing: '¿Listo para tu próximo entrenamiento?',
+    footer: { privacy: 'Privacidad', imprint: 'Aviso legal', terms: 'Términos' },
+    legal: { back: 'Volver al inicio', contents: 'Índice' },
+    imprint: {
+      title: 'Aviso legal',
+      basis: 'Información según el § 5 DDG (ley alemana de servicios digitales)',
+      country: 'Alemania',
+      contact: 'Contacto',
+      email: 'Correo electrónico',
+      disputes: 'Resolución de conflictos de consumo',
+      disputesText:
+        'No estamos dispuestos ni obligados a participar en procedimientos de resolución de conflictos ante un organismo de arbitraje de consumo.',
+    },
+  },
+  fr: {
+    meta: {
+      title: 'Loqqa – App d’entraînement pour iPhone',
+      description:
+        'Loqqa te guide dans ton programme, retient chaque poids et te montre ce que tu dois battre la prochaine fois.',
+    },
+    nav: { language: 'Langue', download: 'Télécharger sur l’App Store', downloadShort: 'Obtenir' },
+    hero: {
+      eyebrow: 'App d’entraînement pour iPhone',
+      title: 'Loqqa retient tout. Toi, tu soulèves.',
+      lead: 'Loqqa te guide dans ton programme, retient chaque poids et te montre ce que tu dois battre la prochaine fois.',
+      note: 'Commence gratuitement',
+    },
+    screens: {
+      plan: 'Loqqa:  programme d’entraînement avec les séances de la semaine',
+      workout: 'Loqqa:  séance en cours avec poids et répétitions de chaque série',
+      history: 'Loqqa:  évolution du poids maximal d’un exercice',
+    },
+    features: [
+      {
+        title: 'Ton programme',
+        text: 'Toutes tes séances en un coup d’œil. Un appui et c’est parti.',
+      },
+      {
+        title: 'Des séries en quelques secondes',
+        text: 'Poids et répétitions d’un seul pouce. Ta dernière valeur est déjà là.',
+      },
+      {
+        title: 'Chaque record enregistré',
+        text: 'Ton historique de chaque exercice, série par série.',
+      },
+    ],
+    bodyCheck: {
+      eyebrow: 'Bilan corporel',
+      title: 'Vois ce qui change.',
+      text: 'Une photo toutes les quelques semaines. Loqqa met les bilans côte à côte.',
+      before: {
+        label: 'Bilan A · 13 avr.',
+        weight: '68,2 kg',
+        alt: 'Bilan corporel du 13 avril',
+      },
+      after: {
+        label: 'Bilan B · 7 sept.',
+        weight: '64,1 kg',
+        alt: 'Bilan corporel du 7 septembre',
+      },
+    },
+    closing: 'Prêt pour ta prochaine séance  ?',
+    footer: { privacy: 'Confidentialité', imprint: 'Mentions légales', terms: 'Conditions' },
+    legal: { back: 'Retour à l’accueil', contents: 'Sommaire' },
+    imprint: {
+      title: 'Mentions légales',
+      basis: 'Informations selon le § 5 DDG (loi allemande sur les services numériques)',
+      country: 'Allemagne',
+      contact: 'Contact',
+      email: 'E-mail',
+      disputes: 'Règlement des litiges de consommation',
+      disputesText:
+        'Nous ne sommes ni disposés ni tenus de participer à une procédure de règlement des litiges devant un organisme de médiation de la consommation.',
+    },
+  },
 };

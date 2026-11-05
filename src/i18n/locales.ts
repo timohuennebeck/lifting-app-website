@@ -1,10 +1,12 @@
-/** The site's languages: the app's five. German is the default and lives at the root. */
+/** The site's languages: the app's seven. German is the default and lives at the root. */
 export const LOCALES = [
   { code: 'de', path: '', short: 'DE', label: 'Deutsch', legal: 'de' },
   { code: 'en', path: 'en', short: 'EN', label: 'English', legal: 'en' },
   { code: 'pt-PT', path: 'pt', short: 'PT', label: 'Português', legal: 'pt-PT' },
   { code: 'pt-BR', path: 'pt-br', short: 'PT-BR', label: 'Português (Brasil)', legal: 'pt-BR' },
   { code: 'ko', path: 'ko', short: 'KO', label: '한국어', legal: 'ko' },
+  { code: 'es', path: 'es', short: 'ES', label: 'Español', legal: 'es' },
+  { code: 'fr', path: 'fr', short: 'FR', label: 'Français', legal: 'fr' },
 ] as const;
 
 export type Locale = (typeof LOCALES)[number];

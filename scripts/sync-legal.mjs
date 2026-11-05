@@ -12,6 +12,8 @@ const FILES = {
   'pt-PT': { terms: 'terms.md', privacy: 'privacy.md' },
   'pt-BR': { terms: 'terms.md', privacy: 'privacy.md' },
   ko: { terms: 'terms.md', privacy: 'privacy.md' },
+  es: { terms: 'terms.md', privacy: 'privacy.md' },
+  fr: { terms: 'terms.md', privacy: 'privacy.md' },
 };
 
 for (const [locale, files] of Object.entries(FILES)) {

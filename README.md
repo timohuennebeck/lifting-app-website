@@ -45,8 +45,8 @@ tools/
 
 ## Languages
 
-The app's five: German at `/` (the design's language), English at `/en`, Portuguese at `/pt`,
-Brazilian Portuguese at `/pt-br` and Korean at `/ko`, each with `/terms`, `/privacy` and
+The app's seven: German at `/` (the design's language), English at `/en`, Portuguese at `/pt`,
+Brazilian Portuguese at `/pt-br`, Korean at `/ko`, Spanish at `/es` and French at `/fr`, each with `/terms`, `/privacy` and
 `/imprint`. All copy lives in `src/i18n/strings.ts`; the phone screens are the app in the same
 language. The language menu links each page to itself in the other languages.
 
