@@ -4,8 +4,7 @@ export const LOCALES = [
   { code: 'en', path: 'en', short: 'EN', label: 'English', legal: 'en' },
   { code: 'pt-PT', path: 'pt', short: 'PT', label: 'Português', legal: 'pt-PT' },
   { code: 'pt-BR', path: 'pt-br', short: 'PT-BR', label: 'Português (Brasil)', legal: 'pt-BR' },
-  // Korean users read the legal texts in English, as in the app.
-  { code: 'ko', path: 'ko', short: 'KO', label: '한국어', legal: 'en' },
+  { code: 'ko', path: 'ko', short: 'KO', label: '한국어', legal: 'ko' },
 ] as const;
 
 export type Locale = (typeof LOCALES)[number];

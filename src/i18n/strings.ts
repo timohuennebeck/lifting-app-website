@@ -15,7 +15,7 @@ interface Strings {
   };
   closing: string;
   footer: { privacy: string; imprint: string; terms: string };
-  legal: { back: string; contents: string; englishOnly?: string };
+  legal: { back: string; contents: string };
   imprint: {
     title: string;
     basis: string;
@@ -271,7 +271,6 @@ export const STRINGS: Record<LocaleCode, Strings> = {
     legal: {
       back: '홈으로',
       contents: '목차',
-      englishOnly: '이 문서는 영어로 제공됩니다.',
     },
     imprint: {
       title: '사업자 정보',

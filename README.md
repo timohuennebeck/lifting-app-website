@@ -54,7 +54,7 @@ language. The language menu links each page to itself in the other languages.
 
 The terms and privacy policy are the app's own texts (`lifting-app/docs/legal`, the versions the
 app shows): `npm run legal:sync` copies them into `src/content/legal/` after they change there.
-German is binding; Korean pages show the English text, as the app does. The imprint takes the
+German is binding. The imprint takes the
 operator's details from `src/config.ts`, as the terms state them.
 
 `APP_STORE_URL` in `src/config.ts` is `#` until the app is in the App Store.
