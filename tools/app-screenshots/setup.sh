@@ -33,6 +33,10 @@ for file in node_modules/react-native-safe-area-context/{src/NativeSafeAreaProvi
   sed -i.bak "s/style.paddingTop = getInset('top');/style.paddingTop = '62px';/; s/style.paddingBottom = getInset('bottom');/style.paddingBottom = '34px';/" "$file"
 done
 
+# The web ignores `contentOffset`, and a list given one leaves its initial scroll to it, so the
+# week strip would stay blank on its oldest week. Without the prop the list scrolls there itself.
+sed -i.bak '/contentOffset={{ x: width \* PAST_WEEKS/d' src/features/training/components/week-strip.tsx
+
 # Supabase is mocked by the screenshot script; the app only needs these to be set.
 cat > .env <<'ENV'
 EXPO_PUBLIC_SUPABASE_URL=http://127.0.0.1:55321

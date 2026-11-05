@@ -2,10 +2,11 @@
 // app's languages. The Expo web server must run on :8081.
 // Usage: node shoot.js [--lang de] [--only training,workout] [--spec spec.json] [--out dir]
 // (default out: src/assets/app-screens/<lang>/)
-// Spec entries: { name, route, tab?, sql?, click?, tap?, after?, scroll?, wait? }:
+// Spec entries: { name, route, tab?, sql?, click?, tap?, after?, scroll?, scrollToItem?, wait? }:
 // - `:id` in `route` becomes the first column of `sql`'s first row (seeded database)
 // - `click` taps elements by their exact text, `tap` taps [x, y, wait ms?] points (pt)
 // - `after` runs SQL once the screen is open, `scroll` scrolls its main list (pt)
+// - `scrollToItem` brings the list's nth item to its top, whatever the texts above it measure
 // - `tab` draws the tab bar with that tab selected; without it the home indicator shows
 const fs = require('fs');
 const path = require('path');
@@ -113,20 +114,29 @@ const runSql = (page, sqls) =>
       await runSql(page, shot.after);
       await page.waitForTimeout(1200);
     }
-    if (shot.scroll) {
-      await page.evaluate((y) => {
-        // The tallest vertical scroller on screen (pager tabs keep theirs off to the side).
-        const scrollers = [...document.querySelectorAll('div')].filter((d) => {
-          const s = getComputedStyle(d);
-          const scrolls = s.overflowY === 'auto' || s.overflowY === 'scroll';
-          const onScreen = d.getBoundingClientRect().x >= 0;
-          return (
-            scrolls && onScreen && d.scrollHeight > d.clientHeight + 10 && d.clientHeight > 300
-          );
-        });
-        const target = scrollers.sort((a, b) => b.clientHeight - a.clientHeight)[0];
-        if (target) target.scrollTop = y;
-      }, shot.scroll);
+    if (shot.scroll || shot.scrollToItem) {
+      await page.evaluate(
+        ({ y, item }) => {
+          // The tallest vertical scroller on screen (pager tabs keep theirs off to the side).
+          const scrollers = [...document.querySelectorAll('div')].filter((d) => {
+            const s = getComputedStyle(d);
+            const scrolls = s.overflowY === 'auto' || s.overflowY === 'scroll';
+            const onScreen = d.getBoundingClientRect().x >= 0;
+            return (
+              scrolls && onScreen && d.scrollHeight > d.clientHeight + 10 && d.clientHeight > 300
+            );
+          });
+          const target = scrollers.sort((a, b) => b.clientHeight - a.clientHeight)[0];
+          if (!target) return;
+          const row = target.firstElementChild?.children[item];
+          target.scrollTop = row
+            ? target.scrollTop +
+              row.getBoundingClientRect().top -
+              target.getBoundingClientRect().top
+            : y;
+        },
+        { y: shot.scroll, item: shot.scrollToItem },
+      );
       await page.waitForTimeout(800);
     }
     await addChrome(page, { tab: shot.tab ?? null, home: !shot.tab, labels });
