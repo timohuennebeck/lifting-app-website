@@ -62,6 +62,6 @@ operator's details from `src/config.ts`, as the terms state them.
 ## Hosting
 
 The build is static (`dist/`, one `.html` file per page, served without the extension), so any
-static host works. Cloudflare Pages is the suggested choice
-(free tier with unlimited bandwidth, preview deployments per branch, redirects and headers
-files): connect the repo with build command `npm run build` and output directory `dist`.
+static host works. It runs on Cloudflare Workers, connected to this repo through Workers Builds.
+`wrangler.jsonc` gives Wrangler the Worker's name, the build command and the output directory.
+Branch builds need it: `wrangler versions upload` doesn't detect any of that by itself.
