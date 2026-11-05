@@ -332,9 +332,9 @@ export const STRINGS: Record<LocaleCode, Strings> = {
       country: 'Alemania',
       contact: 'Contacto',
       email: 'Correo electrónico',
-      disputes: 'Resolución de conflictos de consumo',
+      disputes: 'Resolución de litigios de consumo',
       disputesText:
-        'No estamos dispuestos ni obligados a participar en procedimientos de resolución de conflictos ante un organismo de arbitraje de consumo.',
+        'No estamos dispuestos ni obligados a participar en procedimientos ante una entidad de resolución alternativa de litigios en materia de consumo.',
     },
   },
   fr: {
