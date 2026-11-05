@@ -1,0 +1,6 @@
+{
+  "name": "lifting-app-website",
+  "compatibility_date": "2026-11-03",
+  "build": { "command": "npm run build" },
+  "assets": { "directory": "./dist" },
+}
